@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class ProductSystem {
     public void addProduct(Product product) {
-        String addQuery = "INSERT INTO products (name, quantity, price) VALUES (?, ?, ?)";
+        String addQuery = "INSERT INTO products (name, quantity, price) VALUES (?, ?, ?);";
 
         Connection connection = null;
         try {
