@@ -42,6 +42,7 @@ public class TestProduct {
         assertEquals("Laptop",p1.getName());
         assertEquals(1,p2.getId());
         assertEquals(200,p2.getQuantity());
+        test.updateProduct(0,"Top",200,499.99);
 
     }
 
@@ -55,6 +56,7 @@ public class TestProduct {
         test.deleteProduct("Test");
         p2 = test.getProduct("Test");
         assertNull(p2);
+        test.deleteProduct("Test");
 
     }
 
