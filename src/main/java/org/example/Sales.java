@@ -46,4 +46,14 @@ public class Sales {
     public void setSaleDate(Timestamp saleDate) {
         this.saleDate = saleDate;
     }
+
+    @Override
+    public String toString() {
+        return "Sales{" +
+                "id=" + id +
+                ", productId=" + productId +
+                ", quantity=" + quantity +
+                ", saleDate=" + saleDate +
+                '}';
+    }
 }
