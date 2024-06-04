@@ -48,5 +48,26 @@ public class SalesSystem {
             }
         }
     }
-    
+
+    public ArrayList<Sales> getSalesReport(){
+        String getAllQuery = "SELECT * FROM sales;";
+        ArrayList<Sales> sales = new ArrayList<>();
+        try {
+            Connection connection = DBConnection.getConnection();
+            Statement statement = connection.createStatement();
+            ResultSet result = statement.executeQuery(getAllQuery);
+            while (result.next()){
+                int id = result.getInt("id");
+                int productId = result.getInt("product_id");
+                int quantity = result.getInt("quantity");
+                Timestamp saleDate = result.getTimestamp("sale_date");
+                sales.add(new Sales(id,productId,quantity,saleDate));
+            }
+            return sales;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
