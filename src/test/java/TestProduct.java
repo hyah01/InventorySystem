@@ -45,4 +45,17 @@ public class TestProduct {
 
     }
 
+    @Test
+    public void testAddDelete(){
+        ProductSystem test = new ProductSystem();
+        Product p1 = new Product(0,"Test",1,1.0);
+        test.addProduct(p1);
+        Product p2 = test.getProduct("Test");
+        assertEquals(p1.getName(),p2.getName());
+        test.deleteProduct("Test");
+        p2 = test.getProduct("Test");
+        assertNull(p2);
+
+    }
+
 }

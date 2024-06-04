@@ -4,25 +4,51 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class ProductSystem {
-    private final String addQuery = "INSERT INTO products (name, quantity, price) VALUES(?, ?, ?);";
-    private final String getQuery = "SELECT * FROM products WHERE name = ?;";
-    private final String getAllQuery = "SELECT * FROM products;";
+    public void addProduct(Product product) {
+        String addQuery = "INSERT INTO products (name, quantity, price) VALUES (?, ?, ?)";
 
-    private final String udpateQuery = "UPDATE products SET name = ?, quantity = ?, price = ? WHERE id = ?;";
-    public void addProduct(Product product){
+        Connection connection = null;
         try {
-            Connection connection = DBConnection.getConnection();
+            connection = DBConnection.getConnection();
+            connection.setAutoCommit(false); // Start transaction
+
             PreparedStatement preparedStatement = connection.prepareStatement(addQuery);
-            preparedStatement.setString(1,product.getName());
-            preparedStatement.setInt(2,product.getQuantity());
-            preparedStatement.setDouble(3,product.getPrice());
-            preparedStatement.executeUpdate();
+            preparedStatement.setString(1, product.getName());
+            preparedStatement.setInt(2, product.getQuantity());
+            preparedStatement.setDouble(3, product.getPrice());
+
+            int result = preparedStatement.executeUpdate();
+            connection.commit(); // Commit transaction
+
+            if (result > 0) {
+                System.out.println("Product added successfully.");
+            } else {
+                System.out.println("Product addition failed.");
+            }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            try {
+                if (connection != null) {
+                    connection.rollback(); // Rollback transaction
+                    System.out.println("Transaction rolled back.");
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.setAutoCommit(true); // Restore auto-commit mode
+                    connection.close(); // Close connection
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
     public void updateProduct(int id, String name, int quantity, double price){
-            Connection connection = null;
+        String udpateQuery = "UPDATE products SET name = ?, quantity = ?, price = ? WHERE id = ?;";
+        Connection connection = null;
         try {
             connection = DBConnection.getConnection();
             connection.setAutoCommit(false);
@@ -45,7 +71,46 @@ public class ProductSystem {
             try{
                 if (connection != null){
                     connection.rollback();
-                    System.out.println("Rolled Backed");
+                    System.out.println("Transaction rolled back.");
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.setAutoCommit(true);
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public void deleteProduct(String name) {
+        String deleteQuery = "DELETE FROM products WHERE name = ?;";
+        Connection connection = null;
+        try {
+            connection = DBConnection.getConnection();
+            connection.setAutoCommit(false);
+
+            PreparedStatement preparedStatement = connection.prepareStatement(deleteQuery);
+            preparedStatement.setString(1, name);
+
+            int result = preparedStatement.executeUpdate();
+            connection.commit();
+
+            if (result > 0) {
+                System.out.println("Product deleted successfully.");
+            } else {
+                System.out.println("No product found with the given name.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                if (connection != null) {
+                    connection.rollback();
+                    System.out.println("Transaction rolled back.");
                 }
             } catch (SQLException ex) {
                 ex.printStackTrace();
@@ -63,6 +128,7 @@ public class ProductSystem {
     }
 
     public Product getProduct(String name){
+        String getQuery = "SELECT * FROM products WHERE name = ?;";
         try {
             Connection connection = DBConnection.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(getQuery);
@@ -77,6 +143,7 @@ public class ProductSystem {
 
             }
              else {
+                 System.out.println("Product don't exist");
                  return null;
             }
 
@@ -86,6 +153,7 @@ public class ProductSystem {
     }
 
     public ArrayList<Product> getAllProduct(){
+        String getAllQuery = "SELECT * FROM products;";
         ArrayList<Product> products = new ArrayList<>();
         try {
             Connection connection = DBConnection.getConnection();
