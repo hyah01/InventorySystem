@@ -1,7 +1,9 @@
 package org.example;
 import java.sql.*;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 public class SalesSystem {
+    private static final DecimalFormat df = new DecimalFormat("0.00");
     // Add record sale to sales database
     public void RecordSale(int id, int quantity){
         // provide 2 query to INSERT one into sale database and UPDATE one into product
@@ -105,7 +107,8 @@ public class SalesSystem {
                 Timestamp saleDate = result.getTimestamp(4);
                 String name = result.getString(5);
                 int quantity = result.getInt(6);
-                double profit = result.getDouble(7) * quantity;
+                double price = result.getDouble(7);
+                String profit = df.format(price * saleQuantity);
 
                 salesProduct.add("SaleProduct{" +
                         "id=" + id +
@@ -114,6 +117,7 @@ public class SalesSystem {
                         ", saleDate=" + saleDate +
                         ", name='" + name + '\'' +
                         ", quantity=" + quantity +
+                        ", price=" + price +
                         ", profit=" + profit +
                         '}');
             }
