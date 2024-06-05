@@ -2,24 +2,30 @@ package org.example;
 import java.sql.*;
 import java.util.ArrayList;
 public class SalesSystem {
+    // Add record sale to sales database
     public void RecordSale(int id, int quantity){
+        // provide 2 query to INSERT one into sale database and UPDATE one into product
         String productQuery = "UPDATE products SET quantity = quantity - ? WHERE id = ?;";
         String recordQuery = "INSERT INTO sales (product_id, quantity) VALUES (?, ?);";
         Connection connection = null;
         try {
+            // Add connection
             connection = DBConnection.getConnection();
             connection.setAutoCommit(false); // Start transaction
 
+            // Prepare Statement to subtract quantity from product quantity
             PreparedStatement preparedStatement = connection.prepareStatement(productQuery);
             preparedStatement.setInt(1, quantity);
             preparedStatement.setInt(2, id);
             int result = preparedStatement.executeUpdate();
 
+            // Prepare Statement to add to data to sale database
             preparedStatement = connection.prepareStatement(recordQuery);
             preparedStatement.setInt(1, id);
             preparedStatement.setInt(2, quantity);
             result = preparedStatement.executeUpdate();
 
+            // Only commit After everything works
             connection.commit(); // Commit transaction
 
             if (result > 0) {
@@ -30,6 +36,7 @@ public class SalesSystem {
         } catch (SQLException e) {
             e.printStackTrace();
             try {
+                // If something wrong it will roll back
                 if (connection != null) {
                     connection.rollback(); // Rollback transaction
                     System.out.println("Transaction rolled back.");
@@ -49,11 +56,13 @@ public class SalesSystem {
         }
     }
 
+    // return sales database
     public ArrayList<Sales> getSalesReport(){
         String getAllQuery = "SELECT * FROM sales;";
         ArrayList<Sales> sales = new ArrayList<>();
+        Connection connection = null;
         try {
-            Connection connection = DBConnection.getConnection();
+            connection = DBConnection.getConnection();
             Statement statement = connection.createStatement();
             ResultSet result = statement.executeQuery(getAllQuery);
             while (result.next()){
@@ -67,15 +76,26 @@ public class SalesSystem {
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.setAutoCommit(true);
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
+    // Join sales and products
     public ArrayList<String> getSaleInventoryReport(){
         String getAllQuery = "SELECT s.id,s.product_id,s.quantity AS sale_quantity,s.sale_date, p.name, " +
                 "p.quantity, p.price FROM sales AS s LEFT JOIN products AS p ON s.product_id = p.id;";
         ArrayList<String> salesProduct = new ArrayList<>();
+        Connection connection = null;
         try {
-            Connection connection = DBConnection.getConnection();
+            connection = DBConnection.getConnection();
             Statement statement = connection.createStatement();
             ResultSet result = statement.executeQuery(getAllQuery);
             while (result.next()){
@@ -101,6 +121,15 @@ public class SalesSystem {
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.setAutoCommit(true);
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 

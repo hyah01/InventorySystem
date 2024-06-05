@@ -6,30 +6,34 @@ import java.util.Scanner;
 
 public class InventorySystem {
 
+    // Set up scanners for user input
     private static final Scanner scanner = new Scanner(System.in);
     private static final ProductSystem PS = new ProductSystem();
     private static final SalesSystem SS = new SalesSystem();
 
+    // User logins variable
     static String username;
     static String password;
 
     public static void main(String[] args) {
+        // Get user's username and password
         System.out.println("Enter Username");
         username = scanner.nextLine();
         System.out.println("Enter Password");
         password = scanner.nextLine();
 
+        // Check if user credential is in database
         try {
             User user = UserSystem.authenticate(username,password);
             if (user != null){
                 System.out.println("Logged into: " + user.getUsername());
                 if (user.getRole().equals("admin")){
-                    adminMenu();
+                    adminMenu(); // If role is admin load admin console
                 } else {
-                    userMenu();
+                    userMenu(); // If role is user load user console
                 }
             } else {
-                System.out.println("Invalid Username or Password");
+                System.out.println("Invalid Username or Password"); // If wrong it ends program
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -37,6 +41,7 @@ public class InventorySystem {
 
     }
 
+    // Provides admin what they can do
     private static void adminMenu(){
         while(true){
             try {
@@ -73,6 +78,7 @@ public class InventorySystem {
             }
         }
     }
+    // If role is admin load user console
     private static void userMenu(){
         while (true){
             try {
@@ -99,6 +105,7 @@ public class InventorySystem {
             }
         }
     }
+    // Print out the report joined between sales and products
     private static void generateInventorySaleReport() {
         ArrayList<String> saleProducts = SS.getSaleInventoryReport();
         System.out.println("\n--== Currently Viewing All Sales of Products==--");
@@ -107,6 +114,7 @@ public class InventorySystem {
         }
     }
 
+    // Print out sale records
     private static void generateSaleReport() {
         ArrayList<Sales> sales = SS.getSalesReport();
         System.out.println("\n--== Currently Viewing All Sales ==--");
@@ -115,6 +123,7 @@ public class InventorySystem {
         }
     }
 
+    // Allow user to add in sale, it will take away from quality of product
     private static void recordSale() {
         System.out.println("\n--== Currently Recording Sale ==--");
         System.out.println("Enter Product Id");
@@ -124,6 +133,7 @@ public class InventorySystem {
         SS.RecordSale(id,quantity);
     }
 
+    // Delete Product
     private static void deleteProduct() {
         System.out.println("\n--== Currently Deleting Product ==--");
         System.out.println("Enter Product Name");
@@ -131,6 +141,7 @@ public class InventorySystem {
         PS.deleteProduct(name);
     }
 
+    // Update product based on ID
     private static void updateProduct() {
         System.out.println("\n--== Currently Updating Product ==--");
         System.out.println("Enter Product Id");
@@ -145,6 +156,7 @@ public class InventorySystem {
         System.out.println(PS.getProduct(name));
     }
 
+    // Print out inventory
     private static void viewProduct() {
         ArrayList<Product> products = PS.getAllProduct();
         System.out.println("\n--== Currently Viewing All Products ==--");
@@ -153,6 +165,7 @@ public class InventorySystem {
         }
     }
 
+    // Search for a specific product based on name
     private static void searchProduct() {
         System.out.println("\n--== Currently Searching Product ==--");
         System.out.println("Enter Product Name");
@@ -162,6 +175,7 @@ public class InventorySystem {
         }
     }
 
+    // Add new product to inventory
     private static void addProduct() {
         System.out.println("\n--== Currently Adding Product ==--");
         System.out.println("Enter Product Name");

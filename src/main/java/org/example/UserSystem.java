@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class UserSystem {
+    // Check if user and password is in user database
     public static User authenticate(String username, String password) throws SQLException {
         String query = "SELECT * FROM users WHERE username = ? AND password = ?;";
         Connection connection = DBConnection.getConnection();
