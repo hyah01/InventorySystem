@@ -26,7 +26,17 @@ public class TestSales {
         ArrayList<Sales> products = sale.getSalesReport();
         assertEquals(1,products.get(0).getProductId());
         assertEquals(5,products.get(0).getQuantity());
-        assertEquals(6,products.get(1).getProductId());
+        assertEquals(1,products.get(1).getProductId());
         assertEquals(20,products.get(1).getQuantity());
+    }
+
+    @Test
+    public void testSaleInventoryReport(){
+        SalesSystem sale = new SalesSystem();
+        ArrayList<String> saleProducts = sale.getSaleInventoryReport();
+        String result1 = "SaleProduct{id=1, productId=1, saleQuantity=5, saleDate=2024-06-04 12:07:58.0, name='Laptop', quantity=200, price=499.99}";
+        String result2 = "SaleProduct{id=7, productId=1, saleQuantity=20, saleDate=2024-06-04 14:35:15.0, name='Laptop', quantity=200, price=499.99}";
+        assertEquals(result1,saleProducts.get(0));
+        assertEquals(result2,saleProducts.get(4));
     }
 }

@@ -70,4 +70,38 @@ public class SalesSystem {
         }
     }
 
+    public ArrayList<String> getSaleInventoryReport(){
+        String getAllQuery = "SELECT s.id,s.product_id,s.quantity AS sale_quantity,s.sale_date, p.name, " +
+                "p.quantity, p.price FROM sales AS s LEFT JOIN products AS p ON s.product_id = p.id;";
+        ArrayList<String> salesProduct = new ArrayList<>();
+        try {
+            Connection connection = DBConnection.getConnection();
+            Statement statement = connection.createStatement();
+            ResultSet result = statement.executeQuery(getAllQuery);
+            while (result.next()){
+                int id = result.getInt(1);
+                int productId = result.getInt(2);
+                int saleQuantity = result.getInt(3);
+                Timestamp saleDate = result.getTimestamp(4);
+                String name = result.getString(5);
+                int quantity = result.getInt(6);
+                double price = result.getDouble(7);
+
+                salesProduct.add("SaleProduct{" +
+                        "id=" + id +
+                        ", productId=" + productId +
+                        ", saleQuantity=" + saleQuantity +
+                        ", saleDate=" + saleDate +
+                        ", name='" + name + '\'' +
+                        ", quantity=" + quantity +
+                        ", price=" + price +
+                        '}');
+            }
+            return salesProduct;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

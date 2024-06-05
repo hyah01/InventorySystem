@@ -50,7 +50,8 @@ public class InventorySystem {
                     5) Delete Product
                     6) Record Sale
                     7) Generate Sale Reports
-                    8) Exit
+                    8) Generate Inventory Reports
+                    9) Exit
                     """);
 
                     int input = Integer.parseInt(scanner.nextLine());
@@ -62,12 +63,13 @@ public class InventorySystem {
                         case 5 -> deleteProduct();
                         case 6 -> recordSale();
                         case 7 -> generateSaleReport();
-                        case 8 -> System.exit(0);
-                        default -> System.out.println("Invalid, Try 1-8");
+                        case 8 -> generateInventorySaleReport();
+                        case 9 -> System.exit(0);
+                        default -> System.out.println("Invalid, Try 1-9");
                     }
                 }
             } catch (NumberFormatException e){
-                System.out.println("Invalid, Try number 1-8");
+                System.out.println("Invalid, Try number 1-9");
             }
         }
     }
@@ -95,6 +97,13 @@ public class InventorySystem {
             } catch (NumberFormatException e){
                 System.out.println("Invalid, Try number 1-4");
             }
+        }
+    }
+    private static void generateInventorySaleReport() {
+        ArrayList<String> saleProducts = SS.getSaleInventoryReport();
+        System.out.println("\n--== Currently Viewing All Sales of Products==--");
+        for (String saleProduct : saleProducts){
+            System.out.println(saleProduct);
         }
     }
 
