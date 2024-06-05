@@ -153,7 +153,9 @@ public class InventorySystem {
         System.out.println("Enter Product Price");
         double price = Double.parseDouble(scanner.nextLine());
         PS.updateProduct(id,name,quantity,price);
-        System.out.println(PS.getProduct(name));
+        if (PS.getProduct(name) != null){
+            System.out.println(PS.getProduct(name));
+        }
     }
 
     // Print out inventory

@@ -105,7 +105,7 @@ public class SalesSystem {
                 Timestamp saleDate = result.getTimestamp(4);
                 String name = result.getString(5);
                 int quantity = result.getInt(6);
-                double price = result.getDouble(7);
+                double profit = result.getDouble(7) * quantity;
 
                 salesProduct.add("SaleProduct{" +
                         "id=" + id +
@@ -114,7 +114,7 @@ public class SalesSystem {
                         ", saleDate=" + saleDate +
                         ", name='" + name + '\'' +
                         ", quantity=" + quantity +
-                        ", price=" + price +
+                        ", profit=" + profit +
                         '}');
             }
             return salesProduct;
